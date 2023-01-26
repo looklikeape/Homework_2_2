@@ -1,13 +1,3 @@
-fun main() {
-    val service = WallService()
-    service.add(Post())
-    service.add(Post())
-    service.add(Post())
-    val update = service.add(Post(id=1,text = "bla-bla-bla"))
-    val result = service.update(update)
-    println(result)
-}
-
 data class Post(
     var id: Int = 0,
     val ownerId: Int = 0,
@@ -19,7 +9,22 @@ data class Post(
     val postType: String = "",
     val isVaforite: Boolean = false,
     val markedAsAds: Boolean = false,
-    val comments: Comments = Comments()
+    val comments: Comments = Comments(),
+    val replyOwnerId: Int = 0,
+    val replyPostId: Int = 0,
+    val friendsOnly: Boolean = true,
+    val copyright: String = "",
+    val likes: Likes = Likes(),
+    val reposts: Reposts? = Reposts(),
+    val views: Views = Views(),
+    val geo: Geo? = Geo(),
+    var copyHistory: Array<Reposts> = emptyArray(),
+    val canPin:Boolean = true,
+    val canDelete:Boolean = true,
+    val canEdit: Boolean = true,
+    val isPinned: Boolean = false,
+    val postponedId: Int? = 0,
+    var attachment: Array<Attachment> = emptyArray()
 )
 
 class Comments(
@@ -29,6 +34,21 @@ class Comments(
     val canClose: Boolean = true,
     val canOpen: Boolean = true
 )
+class Likes(
+    val count: Int = 0,
+    val userLikes: Boolean = false,
+    val canLike: Boolean = true,
+    val canPublish: Boolean = true
+)
+class  Reposts( val count: Int = 0, val userReposted: Boolean = false)
+class Views(val count: Int = 0)
+class Geo(
+    val type: String = "",
+    val coordinates: String = "",
+    val place: String = ""
+)
+
+
 
 class WallService {
     private var posts = emptyArray<Post>()
