@@ -1,3 +1,7 @@
+import java.lang.Exception
+import java.lang.RuntimeException
+
+
 data class Post(
     var id: Int = 0,
     val ownerId: Int = 0,
@@ -9,7 +13,7 @@ data class Post(
     val postType: String = "",
     val isVaforite: Boolean = false,
     val markedAsAds: Boolean = false,
-    val comments: Comments = Comments(),
+    var comment: Comment = Comment(),
     val replyOwnerId: Int = 0,
     val replyPostId: Int = 0,
     val friendsOnly: Boolean = true,
@@ -19,7 +23,7 @@ data class Post(
     val views: Views = Views(),
     val geo: Geo? = Geo(),
     var copyHistory: Array<Reposts> = emptyArray(),
-    val canPin:Boolean = true,
+    val canPin: Boolean = true,
     val canDelete:Boolean = true,
     val canEdit: Boolean = true,
     val isPinned: Boolean = false,
@@ -48,17 +52,35 @@ class Geo(
     val place: String = ""
 )
 
-
-
 class WallService {
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
     private var newIdAdd = 0
     fun add(post: Post): Post {
-
         val newPost: Post = post.copy(id = ++newIdAdd)
         posts += newPost
         return posts.last()
     }
+
+    class PostNotFoundException(message: String) : RuntimeException(message)
+
+    private fun findById(id: Int): Post? {
+        for (post in posts) {
+            if (id == post.id) {
+                return post
+            }
+        }
+        return null
+    }
+
+    fun createComment(postId: Int, comment: Comment): Comment {
+        val findResult = findById(id = postId)
+        if (findResult == null) {
+            throw PostNotFoundException("PostNotFound exception")
+        } else comments += comment
+        return comments.last()
+    }
+
 
     fun update(post: Post): Boolean {
         val id = post.id
